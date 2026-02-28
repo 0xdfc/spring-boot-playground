@@ -42,4 +42,6 @@ final public class TestUserFactory {
     public List<UserEntity> createAndPersistMany(
         @NotNull final short limit
     ) {
+        return Stream.generate(this::createAndPersist).limit(limit).toList();
+    }
 }
