@@ -2,18 +2,13 @@ package com.xdfc.playground;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 
-@RestController
 @SpringBootApplication
+@ConfigurationPropertiesScan
+@EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
 public class SpringBootPlaygroundApplication {
-
-    @RequestMapping("/")
-    String home() {
-        return "Hello World";
-    }
-
     static void main(String[] args) {
         SpringApplication.run(SpringBootPlaygroundApplication.class, args);
     }
