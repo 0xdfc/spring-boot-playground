@@ -5,14 +5,17 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.javamoney.moneta.Money;
 
 import javax.money.MonetaryAmount;
 import java.math.BigDecimal;
 
+@Accessors(chain = true)
 @Embeddable
 final public class MonetaryAccountBalance {
-    @Column(precision = 19, scale = 4, nullable = false)
     @NotNull
     private BigDecimal balance;
 
@@ -20,6 +23,28 @@ final public class MonetaryAccountBalance {
     private CurrencyEntity currency;
 
     public MonetaryAmount toMonetaryAmount() {
-        return Money.of(this.balance, this.currency.getSymbol());
+        return Money.of(this.balance, this.currency.getCode());
+    }
+
+    /**
+     * It is the caller's responsibility to ensure that
+     * the balance will not go under zero.
+     *
+     * @param sum expected to be a validated big decimal
+     */
+    public void debit(@NotNull final BigDecimal sum) {
+        this.setBalance(this.getBalance().subtract(sum));
+    }
+
+
+    /**
+     * It is the caller's responsibility to ensure that
+     * the balance will not go beyond the AccountConstants
+     * .MaximumAccountBalance limit.
+     *
+     * @param sum expected to be a validated big decimal
+     */
+    public void credit(@NotNull final BigDecimal sum) {
+        this.setBalance(this.getBalance().add(sum));
     }
 }

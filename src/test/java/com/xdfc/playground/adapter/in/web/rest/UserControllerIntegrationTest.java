@@ -7,7 +7,7 @@ import com.xdfc.playground.adapter.in.web.security.jwt.JwtTokenManager;
 import com.xdfc.playground.adapter.out.persistence.jpa.entity.UserEntity;
 import com.xdfc.playground.domain.delegate.UserRequirementsDelegate;
 import com.xdfc.playground.factory.TestUserFactory;
-import com.xdfc.playground.utility.TestUtilityConfiguration;
+import com.xdfc.playground.configuration.TestUtilityConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;

@@ -37,7 +37,7 @@ public class JwtSecurityFilter extends OncePerRequestFilter {
     ) {
         this.jwtTokenManager.validateToken(token);
 
-        final Optional<UserEntity> user = this.userService.findWithLockByUsername(
+        final Optional<UserEntity> user = this.userService.findByUsername(
             this.jwtTokenManager.tokenToUsername(token)
         );
 

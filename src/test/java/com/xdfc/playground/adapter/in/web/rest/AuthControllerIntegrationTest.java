@@ -6,7 +6,7 @@ import com.xdfc.playground.adapter.in.web.rest.route.AuthControllerRoutes;
 import com.xdfc.playground.adapter.in.web.security.jwt.JwtTokenManager;
 import com.xdfc.playground.factory.TestUserFactory;
 import com.xdfc.playground.generator.FakeDataGenerator;
-import com.xdfc.playground.utility.TestUtilityConfiguration;
+import com.xdfc.playground.configuration.TestUtilityConfiguration;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
