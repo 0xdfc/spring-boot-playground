@@ -2,4 +2,14 @@ spring:
   application:
     name: spring-boot-playground
 
-logging.level.org.springframework.web: DEBUG
+    # This config should stem from the env. I'd like to do a docker
+    # based setup for this but for now it will remain as is.
+    jwt:
+      token-generation-key: ''
+      token-expiration-time: 60
+      token-cookie-name: 'sbp-access'
+
+#logging.level.org.springframework.web: DEBUG
+#logging.level.org.hibernate.SQL: DEBUG
+#logging.level.org.hibernate.orm.jdbc.bind: TRACE
+#spring.jpa.properties.hibernate.format_sql: true
