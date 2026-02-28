@@ -14,5 +14,5 @@ import lombok.NoArgsConstructor;
 public class CurrencyEntity extends ExtendableUuidSuperEntity {
     @Column
     @NotBlank
-    private String symbol;
+    private String code;
 }
