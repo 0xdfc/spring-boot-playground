@@ -4,8 +4,12 @@ import com.xdfc.playground.adapter.in.web.rest.dto.user.CreateUserDTO;
 import com.xdfc.playground.adapter.out.persistence.jpa.entity.UserEntity;
 import com.xdfc.playground.domain.delegate.UserRequirementsDelegate;
 import com.xdfc.playground.generator.FakeDataGenerator;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 final public class TestUserFactory {
     @Autowired
@@ -33,5 +37,11 @@ final public class TestUserFactory {
             this.generator.generateValidEmailAddress(),
             this.generator.generateValidUserPassword()
         );
+    }
+
+    public List<UserEntity> createAndPersistMany(
+        @NotNull final short limit
+    ) {
+        return Stream.generate(this::createAndPersist).limit(limit).toList();
     }
 }

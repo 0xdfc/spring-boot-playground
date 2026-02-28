@@ -1,6 +1,6 @@
 package com.xdfc.playground.adapter.in.web.rest.advice;
 
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -8,19 +8,16 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @ControllerAdvice(annotations = RestController.class)
-public class IntegrityViolationAdvice {
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ProblemDetail> handleIntegrityViolation(
-        final DataIntegrityViolationException exception
+public class CannotAcquireLockAdvice {
+    @ExceptionHandler(CannotAcquireLockException.class)
+    public ResponseEntity<ProblemDetail> handleCannotAcquireLock(
+        final CannotAcquireLockException exception
     ) {
-        final ProblemDetail problem = ProblemDetail.forStatus(
-            HttpStatus.BAD_REQUEST
+        final ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+            HttpStatus.CONFLICT,
+            "validation.resource.already.modified"
         );
-
-        problem.setProperty("errors", List.of("validation.unique.violation"));
 
         return ResponseEntity.of(problem).build();
     }

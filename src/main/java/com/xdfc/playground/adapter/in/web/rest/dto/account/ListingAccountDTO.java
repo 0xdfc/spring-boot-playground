@@ -10,8 +10,5 @@ public record ListingAccountDTO(
     String id,
 
     @NotEmpty
-    String address,
-
-    @NotNull
-    MonetaryAmount balance
+    String address
 ) { }

@@ -7,7 +7,6 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface AccountEntityToListingAccountDTOMapper {
-    @Mapping(target="balance", expression = "java(account.getBalance().toMonetaryAmount())")
     ListingAccountDTO toDto(AccountEntity account);
 }
 

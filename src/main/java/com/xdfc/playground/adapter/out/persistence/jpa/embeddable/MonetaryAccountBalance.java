@@ -28,4 +28,26 @@ final public class MonetaryAccountBalance {
     public MonetaryAmount toMonetaryAmount() {
         return Money.of(this.balance, this.currency.getCode());
     }
+
+    /**
+     * It is the caller's responsibility to ensure that
+     * the balance will not go under zero.
+     *
+     * @param sum expected to be a validated big decimal
+     */
+    public void debit(@NotNull final BigDecimal sum) {
+        this.setBalance(this.getBalance().subtract(sum));
+    }
+
+
+    /**
+     * It is the caller's responsibility to ensure that
+     * the balance will not go beyond the AccountConstants
+     * .MaximumAccountBalance limit.
+     *
+     * @param sum expected to be a validated big decimal
+     */
+    public void credit(@NotNull final BigDecimal sum) {
+        this.setBalance(this.getBalance().add(sum));
+    }
 }

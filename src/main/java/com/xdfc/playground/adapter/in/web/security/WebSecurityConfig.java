@@ -48,7 +48,6 @@ public class WebSecurityConfig {
             )
         ;
 
-        // TODO ->> might not work due to disabling httpBasic and formLogin?
         http.addFilterBefore(this.jwtSecurityFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
