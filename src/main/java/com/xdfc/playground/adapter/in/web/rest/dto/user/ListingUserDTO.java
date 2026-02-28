@@ -1,4 +1,4 @@
-package com.xdfc.playground.adapter.out.web.rest.dto;
+package com.xdfc.playground.adapter.in.web.rest.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;

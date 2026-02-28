@@ -1,22 +1,24 @@
 package com.xdfc.playground.adapter.out.persistence.jpa.entity;
 
+import com.xdfc.playground.domain.enumerable.CurrencyCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.Accessors;
 import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+// However much I'd like to use fluent accessors, here, we
+// are under the requirements of the user details interface.
+@Accessors(chain = true)
 @Entity
 @Getter
 @Setter
@@ -36,13 +38,13 @@ final public class UserEntity extends ExtendableUuidSuperEntity implements UserD
     @OneToMany()
     private Set<AccountEntity> accounts = new HashSet<>();
 
-    public UserEntity(String username, String password) {
-        this.setPassword(password);
-        this.setUsername(username);
-    }
+    private Collection<? extends GrantedAuthority> authorities = List.of();
 
-    @Override
-    public @NonNull Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+    public UserEntity(
+        @NotEmpty final String username,
+        @NotEmpty final String password
+    ) {
+        this.setPassword(password)
+            .setUsername(username);
     }
 }

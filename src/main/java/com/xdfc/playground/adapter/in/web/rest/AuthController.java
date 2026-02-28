@@ -1,12 +1,13 @@
-package com.xdfc.playground.adapter.in.web.rest.auth;
+package com.xdfc.playground.adapter.in.web.rest;
 
-import com.xdfc.playground.adapter.in.web.rest.dto.CreateUserDTO;
-import com.xdfc.playground.adapter.in.web.rest.dto.JwtTokenDto;
-import com.xdfc.playground.adapter.in.web.rest.dto.LoginDto;
+import com.xdfc.playground.adapter.in.web.rest.dto.user.CreateUserDTO;
+import com.xdfc.playground.adapter.in.web.rest.dto.auth.JwtTokenDto;
+import com.xdfc.playground.adapter.in.web.rest.dto.user.LoginDTO;
 import com.xdfc.playground.adapter.in.web.rest.exception.NotFoundHttpException;
+import com.xdfc.playground.adapter.in.web.rest.route.AuthControllerRoutes;
 import com.xdfc.playground.adapter.in.web.rest.service.HttpAuthService;
 import com.xdfc.playground.adapter.out.persistence.jpa.entity.UserEntity;
-import com.xdfc.playground.adapter.out.web.rest.dto.ListingUserDTO;
+import com.xdfc.playground.adapter.in.web.rest.dto.user.ListingUserDTO;
 import com.xdfc.playground.domain.delegate.UserRequirementsDelegate;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -19,8 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth/manage")
-public class AuthManagerController {
+@RequestMapping(AuthControllerRoutes.ROOT_ENDPOINT)
+public class AuthController {
     @Autowired
     private PasswordEncoder encoder;
 
@@ -33,7 +34,7 @@ public class AuthManagerController {
     @Autowired
     private HttpAuthService httpAuthService;
 
-    @PostMapping("/registration")
+    @PostMapping(AuthControllerRoutes.REGISTRATION_SEGMENT)
     @ResponseStatus(HttpStatus.CREATED)
     public ListingUserDTO create(
         @NonNull final HttpServletResponse response,
@@ -54,10 +55,10 @@ public class AuthManagerController {
     // TODO ->> this endpoint should be rate-limited, but,
     // TODO ^->> in optimal setups this would be offloaded onto
     // TODO ^->> services like the Spring Cloud Gateway etc
-    @PostMapping("/login")
+    @PostMapping(AuthControllerRoutes.LOGIN_SEGMENT)
     public JwtTokenDto login(
         @NonNull final HttpServletResponse response,
-        @Valid @RequestBody final LoginDto credentials
+        @Valid @RequestBody final LoginDTO credentials
     ) {
         this.authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
@@ -68,7 +69,7 @@ public class AuthManagerController {
 
         final UserEntity user = this.users
             .getService()
-            .findByUsername(credentials.username())
+            .findWithLockByUsername(credentials.username())
             .orElseThrow(
                 NotFoundHttpException::new
             );
@@ -76,12 +77,12 @@ public class AuthManagerController {
         return this.httpAuthService.authorise(response, credentials.username());
     }
 
-    @PostMapping("/forgot/password")
+    @PostMapping(AuthControllerRoutes.FORGOT_PASSWORD_SEGMENT)
     public void forgot() {
         // TODO ->>
     }
 
-    @PostMapping("/reset/password")
+    @PostMapping(AuthControllerRoutes.RESET_PASSWORD_SEGMENT)
     public void reset() {
         // TODO ->>
     }

@@ -1,5 +1,6 @@
 package com.xdfc.playground.adapter.in.web.security.jwt;
 
+import com.xdfc.playground.adapter.in.web.rest.constant.AuthConstants;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,21 +11,19 @@ import java.util.Optional;
 
 @Service
 final public class JwtTokenExtractor {
-    private final static String AuthHeader = "Authorization";
-    private final static String BearerPrefix = "Bearer ";
-    private final static int BearerPrefixLength = BearerPrefix.length();
+    private final static int BearerPrefixLength = AuthConstants.BearerPrefix.length();
 
     @Autowired
     private JwtTokenManager jwtTokenManager;
 
     private Optional<String> bearerFromHeader(final HttpServletRequest request) {
         final Optional<String> header = Optional.ofNullable(
-            request.getHeader(AuthHeader)
+            request.getHeader(AuthConstants.AuthHeader)
         );
 
         Optional<String> bearer = Optional.empty();
 
-        if (header.isPresent() && header.get().startsWith(BearerPrefix)) {
+        if (header.isPresent() && header.get().startsWith(AuthConstants.BearerPrefix)) {
             bearer = Optional.of(header.get().substring(BearerPrefixLength));
         }
 
@@ -46,8 +45,8 @@ final public class JwtTokenExtractor {
     }
 
     public Optional<String> toToken(final HttpServletRequest request) {
-        return this.bearerFromHeader(request).or(
-            () -> this.bearerFromCookie(request)
+        return this.bearerFromCookie(request).or(
+            () -> this.bearerFromHeader(request)
         );
     }
 }
