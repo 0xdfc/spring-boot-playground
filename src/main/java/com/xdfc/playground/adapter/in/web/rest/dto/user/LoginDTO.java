@@ -1,4 +1,4 @@
-package com.xdfc.playground.adapter.in.web.rest.dto;
+package com.xdfc.playground.adapter.in.web.rest.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 
 // Currently and temporarily a direct copy of the CreateUserDto,
 // which in time, should have additional validation rules.
-public record LoginDto(
+public record LoginDTO(
         @NotBlank
         @Email
         String username,

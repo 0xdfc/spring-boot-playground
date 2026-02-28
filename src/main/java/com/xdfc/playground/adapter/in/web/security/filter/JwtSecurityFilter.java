@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -38,7 +37,7 @@ public class JwtSecurityFilter extends OncePerRequestFilter {
     ) {
         this.jwtTokenManager.validateToken(token);
 
-        final Optional<UserEntity> user = this.userService.findByUsername(
+        final Optional<UserEntity> user = this.userService.findWithLockByUsername(
             this.jwtTokenManager.tokenToUsername(token)
         );
 
@@ -54,9 +53,9 @@ public class JwtSecurityFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-        @NonNull HttpServletRequest request,
-        @NonNull HttpServletResponse response,
-        @NonNull FilterChain filterChain
+        @NonNull final HttpServletRequest request,
+        @NonNull final HttpServletResponse response,
+        @NonNull final FilterChain filterChain
     ) throws ServletException, IOException {
         final Optional<String> token = this.jwtTokenExtractor.toToken(
             request

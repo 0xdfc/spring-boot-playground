@@ -1,6 +1,6 @@
 package com.xdfc.playground.adapter.in.web.rest.service;
 
-import com.xdfc.playground.adapter.in.web.rest.dto.JwtTokenDto;
+import com.xdfc.playground.adapter.in.web.rest.dto.auth.JwtTokenDto;
 import com.xdfc.playground.adapter.in.web.security.jwt.JwtTokenManager;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.NonNull;

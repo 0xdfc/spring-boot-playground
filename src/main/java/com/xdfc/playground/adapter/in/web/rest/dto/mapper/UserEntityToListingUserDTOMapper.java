@@ -1,7 +1,7 @@
-package com.xdfc.playground.adapter.out.web.rest.dto.mapper;
+package com.xdfc.playground.adapter.in.web.rest.dto.mapper;
 
 import com.xdfc.playground.adapter.out.persistence.jpa.entity.UserEntity;
-import com.xdfc.playground.adapter.out.web.rest.dto.ListingUserDTO;
+import com.xdfc.playground.adapter.in.web.rest.dto.user.ListingUserDTO;
 import org.mapstruct.Mapper;
 
 // The property componentModel enables DI from spring

@@ -1,4 +1,4 @@
-package com.xdfc.playground.adapter.in.web.rest.dto;
+package com.xdfc.playground.adapter.in.web.rest.dto.auth;
 
 import jakarta.validation.constraints.NotEmpty;
 
