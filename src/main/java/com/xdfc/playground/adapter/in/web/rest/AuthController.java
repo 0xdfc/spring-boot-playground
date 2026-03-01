@@ -40,11 +40,11 @@ public class AuthController {
         @NonNull final HttpServletResponse response,
         @Valid @RequestBody final CreateUserDTO user
     ) {
-        final UserEntity entity = this.users.getCreationMapper().toUser(user);
+        final UserEntity entity = this.users.getMapper().toUser(user);
 
         entity.setPassword(this.encoder.encode(entity.getPassword()));
 
-        final ListingUserDTO respondingWith = this.users.getListingMapper()
+        final ListingUserDTO respondingWith = this.users.getMapper()
             .toDto(this.users.getService().save(entity));
 
         this.httpAuthService.authorise(response, entity.getUsername());

@@ -24,7 +24,7 @@ final public class TestUserFactory {
     public UserEntity createAndPersist(String email, String password) {
         final CreateUserDTO dto = CreateUserDTO.make(email, password);
 
-        final UserEntity user = this.delegate.getCreationMapper()
+        final UserEntity user = this.delegate.getMapper()
                 .toUser(dto);
 
         user.setPassword(this.encoder.encode(user.getPassword()));

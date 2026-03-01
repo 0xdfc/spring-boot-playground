@@ -50,7 +50,7 @@ public class UserControllerIntegrationTest {
             .isOk()
             .expectBody(ListingUserDTO.class)
             .isEqualTo(
-                this.delegate.getListingMapper().toDto(user)
+                this.delegate.getMapper().toDto(user)
             );
     }
 

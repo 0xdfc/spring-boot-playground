@@ -24,7 +24,7 @@ public class UserController {
     @GetMapping()
     public Page<ListingUserDTO> index(final Pageable pageable) {
         return this.users.getService().all(pageable).map(
-            (UserEntity user) -> this.users.getListingMapper().toDto(user)
+            (UserEntity user) -> this.users.getMapper().toDto(user)
         );
     }
 
@@ -34,7 +34,7 @@ public class UserController {
         final UserEntity user = this.users.getService().find(id)
             .orElseThrow(NotFoundHttpException::new);
 
-        return this.users.getListingMapper().toDto(user);
+        return this.users.getMapper().toDto(user);
     }
 
     @IsOwnerOrAdministrator

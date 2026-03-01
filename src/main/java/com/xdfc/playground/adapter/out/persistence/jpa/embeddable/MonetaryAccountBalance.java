@@ -14,6 +14,8 @@ import javax.money.MonetaryAmount;
 import java.math.BigDecimal;
 
 @Accessors(chain = true)
+@Getter
+@Setter
 @Embeddable
 final public class MonetaryAccountBalance {
     @NotNull
