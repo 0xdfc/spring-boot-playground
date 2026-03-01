@@ -8,6 +8,9 @@ import com.xdfc.playground.adapter.out.persistence.jpa.entity.UserEntity;
 import com.xdfc.playground.domain.delegate.UserRequirementsDelegate;
 import com.xdfc.playground.factory.TestUserFactory;
 import com.xdfc.playground.configuration.TestUtilityConfiguration;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
@@ -16,6 +19,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.client.RestTestClient;
 
+import java.util.List;
+
+@Accessors(chain = true)
+@Setter
 @Import(TestUtilityConfiguration.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureRestTestClient
@@ -32,25 +39,34 @@ public class UserControllerIntegrationTest {
     @Autowired
     private UserRequirementsDelegate delegate;
 
+    private List<UserEntity> users;
+    private UserEntity userA, userB;
+
+    private String authBearer;
+
+    @BeforeEach
+    public void initialiseUserControllerTestData() {
+        this.setUsers(this.factory.createAndPersistMany((short) 2))
+            .setUserA(this.users.getFirst())
+            .setUserB(this.users.getLast());
+
+        this.setAuthBearer(AuthConstants.BearerPrefix.concat(
+            this.manager.generateTokenFor(this.userA.getUsername())
+        ));
+    }
+
     @Test
     public void aUserCanViewTheirOwnUserById() {
-        final UserEntity user = this.factory.createAndPersist();
-
-        final String token = this.manager.generateTokenFor(user.getUsername());
-
         this.client.get()
-            .uri(UserControllerRoutes.getUserByIdEndpoint(user.getId()))
-            .header(
-                AuthConstants.AuthHeader,
-                AuthConstants.BearerPrefix.concat(token)
-            )
+            .uri(UserControllerRoutes.getUserByIdEndpoint(this.userA.getId()))
+            .header(AuthConstants.AuthHeader, this.authBearer)
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus()
             .isOk()
             .expectBody(ListingUserDTO.class)
             .isEqualTo(
-                this.delegate.getMapper().toDto(user)
+                this.delegate.getMapper().toDto(this.userA)
             );
     }
 
@@ -61,10 +77,8 @@ public class UserControllerIntegrationTest {
     // that expectations are or are not met.
     @Test
     public void aGuestCannotViewAUserById() {
-        final UserEntity user = this.factory.createAndPersist();
-
         this.client.get()
-            .uri(UserControllerRoutes.getUserByIdEndpoint(user.getId()))
+            .uri(UserControllerRoutes.getUserByIdEndpoint(this.userA.getId()))
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus()
@@ -73,14 +87,11 @@ public class UserControllerIntegrationTest {
 
     @Test
     public void oneUserCannotFindAnotherById() {
-        final UserEntity
-            userA = this.factory.createAndPersist(),
-            userB = this.factory.createAndPersist();
-
-        final String userBToken = this.manager.generateTokenFor(userB.getUsername());
+        final String userBToken = this.manager
+            .generateTokenFor(this.userB.getUsername());
 
         this.client.get()
-            .uri(UserControllerRoutes.getUserByIdEndpoint(userA.getId()))
+            .uri(UserControllerRoutes.getUserByIdEndpoint(this.userA.getId()))
             .header(
                     AuthConstants.AuthHeader,
                     AuthConstants.BearerPrefix.concat(userBToken)
@@ -93,16 +104,9 @@ public class UserControllerIntegrationTest {
 
     @Test
     public void aUserCanDeleteTheirOwnAccount() {
-        final UserEntity user = this.factory.createAndPersist();
-
-        final String token = this.manager.generateTokenFor(user.getUsername());
-
         this.client.delete()
-            .uri(UserControllerRoutes.getUserByIdEndpoint(user.getId()))
-            .header(
-                    AuthConstants.AuthHeader,
-                    AuthConstants.BearerPrefix.concat(token)
-            )
+            .uri(UserControllerRoutes.getUserByIdEndpoint(this.userA.getId()))
+            .header(AuthConstants.AuthHeader, this.authBearer)
             .exchange()
             .expectStatus()
             .isNoContent();
@@ -110,14 +114,11 @@ public class UserControllerIntegrationTest {
 
     @Test
     public void oneUserCannotDeleteAnotherById() {
-        final UserEntity
-                userA = this.factory.createAndPersist(),
-                userB = this.factory.createAndPersist();
-
-        final String userBToken = this.manager.generateTokenFor(userB.getUsername());
+        final String userBToken = this.manager
+            .generateTokenFor(this.userB.getUsername());
 
         this.client.delete()
-            .uri(UserControllerRoutes.getUserByIdEndpoint(userA.getId()))
+            .uri(UserControllerRoutes.getUserByIdEndpoint(this.userA.getId()))
             .header(
                     AuthConstants.AuthHeader,
                     AuthConstants.BearerPrefix.concat(userBToken)
@@ -129,10 +130,8 @@ public class UserControllerIntegrationTest {
 
     @Test
     public void aGuestCannotDeleteAnotherUserById() {
-        final UserEntity user = this.factory.createAndPersist();
-
         this.client.delete()
-            .uri(UserControllerRoutes.getUserByIdEndpoint(user.getId()))
+            .uri(UserControllerRoutes.getUserByIdEndpoint(this.userA.getId()))
             .exchange()
             .expectStatus()
             .isForbidden();

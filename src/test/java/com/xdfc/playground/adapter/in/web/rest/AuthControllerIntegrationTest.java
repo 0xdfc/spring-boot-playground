@@ -78,7 +78,6 @@ public class AuthControllerIntegrationTest {
             ),
             CreateUserDTO.make(blank, this.generator.generateValidUserPassword()),
 
-
             CreateUserDTO.make(this.generator.generateValidEmailAddress(), blank),
             CreateUserDTO.make(
                 this.generator.generateValidEmailAddress(),
